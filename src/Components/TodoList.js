@@ -1,25 +1,42 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, Modal} from 'react-native';
+import React, {useState} from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import TodoModal from './TodoModal';
 
 export default function TodoList({list}) {
   const completedCount = list.todos.filter(todo => todo.completed).length;
   const remainingCount = list.todos.length - completedCount;
 
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
-    <View style={[styles.listContainer, {backgroundColor: list.color}]}>
-      <Text style={styles.listTitle} numberOfLines={1}>
-        {list.name}
-      </Text>
+    <View>
+      <Modal visible={modalOpen} animationType="slide" transparent={false}>
+        <View>
+          <TodoModal
+            list={list}
+            closeModal={() => setModalOpen(false)}
+            //  updateList={updateList}
+          />
+        </View>
+      </Modal>
 
-      <View style={{alignItems: 'center'}}>
-        <Text style={styles.count}>{remainingCount}</Text>
-        <Text style={styles.subTitle}>Remaining</Text>
-      </View>
-
-      <View style={{alignItems: 'center'}}>
-        <Text style={styles.count}>{completedCount}</Text>
-        <Text style={styles.subTitle}>Completed</Text>
-      </View>
+      <TouchableOpacity
+        onPress={() => setModalOpen(true)}
+        style={[styles.listContainer, {backgroundColor: list.color}]}>
+        <Text style={styles.listTitle} numberOfLines={1}>
+          {list.name}
+        </Text>
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.count}>{remainingCount}</Text>
+          <Text style={styles.subTitle}>Remaining</Text>
+        </View>
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.count}>{completedCount}</Text>
+          <Text style={styles.subTitle}>Completed</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }

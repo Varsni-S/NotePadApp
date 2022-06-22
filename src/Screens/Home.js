@@ -19,6 +19,8 @@ import AddTodoList from '../Components/AddTodoList';
 
 export default function Home({navigation}) {
   const [name, setName] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [lists, setLists] = useState(tempData);
 
   useEffect(() => {
     getData();
@@ -62,20 +64,34 @@ export default function Home({navigation}) {
     }
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const renderList = list => {
+    return <TodoList list={list} />;
+  };
+  // updateList={updateList}
+
+  // const addList = list => {
+  //   setLists({lists: [...lists, {...list, id: lists.length + 1, todos: []}]});
+  // };
+
+  // const updateList = list => {
+  //   setLists({
+  //     lists: lists.map(item => {
+  //       return item.id === list.id ? list : item;
+  //     }),
+  //   });
+  // };
 
   return (
     <View style={styles.body}>
       <Modal visible={modalOpen} animationType="slide" transparent={false}>
         <View>
-          <TouchableOpacity
-            onPress={() => setModalOpen(false)}
-            style={{position: 'absolute', top: 24, right: 32}}>
-            <FontAwesomeIcon icon={faTimes} />
-          </TouchableOpacity>
-          <AddTodoList />
+          <AddTodoList
+            closeModal={() => setModalOpen(false)}
+            // addList={addList}
+          />
         </View>
       </Modal>
+
       <Text style={styles.text}>Welcome {name}</Text>
       <TextInput
         style={styles.input}
@@ -89,11 +105,6 @@ export default function Home({navigation}) {
         <Button title="Remove" color="red" onPress={removeData} />
       </View>
 
-      {/* <Button
-        title="Add Notes"
-        color="black"
-        onPress={() => navigation.navigate('AddNotes')}
-      /> */}
       <View style={{flexDirection: 'row'}}>
         <Text style={styles.title}>Todo</Text>
         <Text
@@ -110,9 +121,7 @@ export default function Home({navigation}) {
 
       <TouchableOpacity
         style={styles.addList}
-        // onPress={() => navigation.navigate('AddNotes')}>
         onPress={() => setModalOpen(true)}>
-        {/* onPress={() => setModalVisible(!modalVisible)}> */}
         <FontAwesomeIcon icon={faPlus} size={25} color={'blue'} />
       </TouchableOpacity>
 
@@ -120,11 +129,11 @@ export default function Home({navigation}) {
 
       <View style={{height: 275, paddingLeft: 32}}>
         <FlatList
-          data={tempData}
+          data={lists}
           keyExtractor={item => item.name}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          renderItem={({item}) => <TodoList list={item} />}
+          renderItem={({item}) => renderList(item)}
         />
       </View>
     </View>

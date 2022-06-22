@@ -41,7 +41,14 @@ export default function AddTodoList({closeModal}) {
       <View>
         <TouchableOpacity
           onPress={closeModal}
-          style={{position: 'absolute', top: 24, right: 32, zIndex: 10}}>
+          style={{
+            //   position: 'absolute',
+            top: 24,
+            right: 32,
+            left: 99,
+
+            marginLeft: 130,
+          }}>
           <FontAwesomeIcon icon={faTimes} />
         </TouchableOpacity>
         <Text style={styles.title}>Create New Todos</Text>
