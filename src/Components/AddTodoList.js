@@ -12,7 +12,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {useLinkProps} from '@react-navigation/native';
 import tempData from '../Data/tempData';
 
-export default function AddTodoList() {
+export default function AddTodoList({closeModal}) {
   const backgroundColors = [
     '#5CD859',
     '#24A6D9',
@@ -33,11 +33,17 @@ export default function AddTodoList() {
       todos: [],
     });
     setAddTodos({name: '', color: ''});
+    closeModal();
   };
 
   return (
     <View style={styles.container}>
       <View>
+        <TouchableOpacity
+          onPress={closeModal}
+          style={{position: 'absolute', top: 24, right: 32, zIndex: 10}}>
+          <FontAwesomeIcon icon={faTimes} />
+        </TouchableOpacity>
         <Text style={styles.title}>Create New Todos</Text>
       </View>
 
