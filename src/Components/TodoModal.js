@@ -34,6 +34,7 @@ export default function TodoModal({list, closeModal}) {
   const [name, setName] = useState('');
   const [color, setColors] = useState('');
   const [todos, setTodos] = useState('');
+  const [value, setValue] = useState('');
 
   const renderTodo = todo => {
     return (
@@ -58,14 +59,19 @@ export default function TodoModal({list, closeModal}) {
       </View>
     );
   };
+
+  // const onAddMoreTodo = value => {
+  //   setValue(value);
+  // };
   return (
-    <KeyboardAvoidingView behavior="padding">
-      <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView>
+      <View style={styles.container}>
         <TouchableOpacity
           onPress={closeModal}
           style={{position: 'absolute', top: 24, right: 32, zIndex: 10}}>
           <FontAwesomeIcon icon={faTimes} />
         </TouchableOpacity>
+
         <View
           style={[styles.section, styles.header, {borderBottomColor: 'grey'}]}>
           <View>
@@ -76,6 +82,21 @@ export default function TodoModal({list, closeModal}) {
           </View>
         </View>
 
+        <View style={[styles.section, styles.footer]}>
+          <TextInput
+            style={[styles.input, {borderColor: 'black'}]}
+            placeholder="Add More"
+            onChangeText={setValue}
+            value={value}
+          />
+          <TouchableOpacity
+            style={[styles.addTodo, {backgroundColor: 'grey'}]}
+            onPress={() => setValue('')}>
+            <FontAwesomeIcon icon={faPlus} size={20} />
+          </TouchableOpacity>
+        </View>
+        <Text>{value}</Text>
+
         <View style={[styles.sections]}>
           <FlatList
             data={list.todos}
@@ -85,14 +106,7 @@ export default function TodoModal({list, closeModal}) {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-
-        <View style={[styles.section, styles.footer]}>
-          <TextInput style={[styles.input, {borderColor: 'black'}]} />
-          <TouchableOpacity style={[styles.addTodo, {backgroundColor: 'grey'}]}>
-            <FontAwesomeIcon icon={faPlus} size={20} />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -100,15 +114,15 @@ export default function TodoModal({list, closeModal}) {
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    //  justifyContent: 'center',
+    //  alignItems: 'center',
     //
   },
   section: {
     alignSelf: 'stretch',
     marginLeft: 20,
     marginRight: 20,
-    //   marginTop: 120,
+    marginTop: 30,
   },
   sections: {
     alignSelf: 'stretch',
@@ -129,7 +143,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   footer: {
-    paddingHorizontal: 32,
+    // paddingHorizontal: 32,
     flexDirection: 'row',
     alignItems: 'center',
   },
