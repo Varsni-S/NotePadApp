@@ -4,11 +4,12 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import TodoModal from './TodoModal';
 
-export default function TodoList({list}) {
+export default function TodoList({list, updateTodos, updateList, parentIndex}) {
   const completedCount = list.todos.filter(todo => todo.completed).length;
   const remainingCount = list.todos.length - completedCount;
 
   const [modalOpen, setModalOpen] = useState(false);
+  // console.log(list);
 
   return (
     <View>
@@ -16,8 +17,10 @@ export default function TodoList({list}) {
         <View>
           <TodoModal
             list={list}
+            updateTodos={updateTodos}
             closeModal={() => setModalOpen(false)}
-            //  updateList={updateList}
+            updateList={updateList}
+            parentIndex={parentIndex}
           />
         </View>
       </Modal>

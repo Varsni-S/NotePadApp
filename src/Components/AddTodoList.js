@@ -13,6 +13,7 @@ import {useLinkProps} from '@react-navigation/native';
 import tempData from '../Data/tempData';
 
 export default function AddTodoList({closeModal}) {
+  //, addList
   const backgroundColors = [
     '#5CD859',
     '#24A6D9',
@@ -26,12 +27,14 @@ export default function AddTodoList({closeModal}) {
   const [addTodos, setAddTodos] = useState(name, color);
 
   const createTodos = () => {
-    console.log(name, color);
+    //  console.log(name, color);
+    // const list = {name, color};
     tempData.push({
       name,
       color,
       todos: [],
     });
+    // addList(list);
     setAddTodos({name: '', color: ''});
     closeModal();
   };

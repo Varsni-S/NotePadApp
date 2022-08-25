@@ -16,16 +16,35 @@ import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import tempData from '../Data/tempData';
 import TodoList from '../Components/TodoList';
 import AddTodoList from '../Components/AddTodoList';
-
+import Fire from '../../Fire';
+// import firebase from 'firebase';
 export default function Home({navigation}) {
   const [name, setName] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [lists, setLists] = useState(tempData);
-
+  const [user, setUser] = useState();
   useEffect(() => {
     getData();
+    //  firestorefun();
   }, []);
 
+  const updateTodos = (parentIndex, index) => {
+    let newLists = [...lists];
+    newLists[parentIndex].todos[index].completed =
+      !newLists[parentIndex].todos[index].completed;
+    // console.log({newLists, lists});
+    setLists(newLists);
+  };
+
+  const firestorefun = () => {
+    firebase = new Fire((error, user) => {
+      if (error) {
+        alert('went wrong');
+        return;
+      }
+      setUser({user});
+    });
+  };
   const getData = () => {
     try {
       AsyncStorage.getItem('UserData').then(value => {
@@ -64,22 +83,29 @@ export default function Home({navigation}) {
     }
   };
 
-  const renderList = list => {
-    return <TodoList list={list} />;
+  const renderList = (list, index) => {
+    return (
+      <TodoList
+        list={list}
+        parentIndex={index}
+        updateTodos={updateTodos}
+        updateList={updateList}
+      />
+    );
   };
-  // updateList={updateList}
 
   // const addList = list => {
-  //   setLists({lists: [...lists, {...list, id: lists.length + 1, todos: []}]});
+  //   setLists({lists: [...list, {...list, id: lists.length + 1, todos: []}]});
   // };
 
-  // const updateList = list => {
-  //   setLists({
-  //     lists: lists.map(item => {
-  //       return item.id === list.id ? list : item;
-  //     }),
-  //   });
-  // };
+  const updateList = list => {
+    // console.log(list, 'list');
+    let newList = lists.map(item => {
+      return item.id === list.id ? list : item;
+    });
+    setLists(newList);
+    console.log('update');
+  };
 
   return (
     <View style={styles.body}>
@@ -87,10 +113,14 @@ export default function Home({navigation}) {
         <View>
           <AddTodoList
             closeModal={() => setModalOpen(false)}
-            // addList={addList}
+            //  addList={addList}
           />
         </View>
       </Modal>
+
+      {/* <View>
+        <Text>user{user.uid}</Text>
+      </View> */}
 
       <Text style={styles.text}>Welcome {name}</Text>
       <TextInput
@@ -133,7 +163,8 @@ export default function Home({navigation}) {
           keyExtractor={item => item.name}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          renderItem={({item}) => renderList(item)}
+          renderItem={({item, index}) => renderList(item, index)}
+          keyboardShouldPersistTaps="always"
         />
       </View>
     </View>

@@ -33,7 +33,7 @@ export default tempData = [
     todos: [
       {
         title: 'Pick Fruits',
-        completed: false,
+        completed: true,
       },
       {
         title: 'Add to Cart',

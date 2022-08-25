@@ -7,6 +7,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import React, {useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -19,7 +20,13 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
-export default function TodoModal({list, closeModal}) {
+export default function TodoModal({
+  list,
+  updateTodos,
+  parentIndex,
+  closeModal,
+  updateList,
+}) {
   const taskCount = list.todos.length;
   const completedCount = list.todos.filter(todo => todo.completed).length;
 
@@ -34,16 +41,30 @@ export default function TodoModal({list, closeModal}) {
   const [name, setName] = useState('');
   const [color, setColors] = useState('');
   const [todos, setTodos] = useState('');
-  const [value, setValue] = useState('');
+  const [newTodos, setNewTodos] = useState('');
 
-  const renderTodo = todo => {
+  const toggleTodoCompleted = (list, index) => {
+    // let newTodos = list.todos;
+    // console.log(list);
+    // newTodos[index].completed = !newTodos[index].completed;
+    updateTodos(parentIndex, index);
+  };
+
+  const addTodo = () => {
+    list.todos.push({title: newTodos, completed: false});
+    //setNewTodos({newTodos: ''});
+    // console.log(newTodos);
+    updateList(list);
+    Keyboard.dismiss();
+  };
+  const renderTodo = (todo, index) => {
     return (
       <View style={styles.todoContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => toggleTodoCompleted(list, index)}>
           <FontAwesomeIcon
             icon={todo.completed ? faSquareCheck : faSquare}
             size={18}
-            color={'grey'}
+            color={list.color}
           />
         </TouchableOpacity>
         <Text
@@ -63,6 +84,7 @@ export default function TodoModal({list, closeModal}) {
   // const onAddMoreTodo = value => {
   //   setValue(value);
   // };
+
   return (
     <KeyboardAvoidingView>
       <View style={styles.container}>
@@ -73,7 +95,11 @@ export default function TodoModal({list, closeModal}) {
         </TouchableOpacity>
 
         <View
-          style={[styles.section, styles.header, {borderBottomColor: 'grey'}]}>
+          style={[
+            styles.section,
+            styles.header,
+            {borderBottomColor: list.color},
+          ]}>
           <View>
             <Text style={styles.title}>{list.name}</Text>
             <Text style={styles.taskCount}>
@@ -84,23 +110,23 @@ export default function TodoModal({list, closeModal}) {
 
         <View style={[styles.section, styles.footer]}>
           <TextInput
-            style={[styles.input, {borderColor: 'black'}]}
+            style={[styles.input, {borderColor: list.color}]}
             placeholder="Add More"
-            onChangeText={setValue}
-            value={value}
+            onChangeText={text => setNewTodos(text)}
+            value={newTodos}
           />
           <TouchableOpacity
-            style={[styles.addTodo, {backgroundColor: 'grey'}]}
-            onPress={() => setValue('')}>
+            style={[styles.addTodo, {backgroundColor: list.color}]}
+            onPress={() => addTodo()}>
             <FontAwesomeIcon icon={faPlus} size={20} />
           </TouchableOpacity>
         </View>
-        <Text>{value}</Text>
+        {/* <Text>{newTodos}</Text> */}
 
         <View style={[styles.sections]}>
           <FlatList
             data={list.todos}
-            renderItem={({item}) => renderTodo(item)}
+            renderItem={({item, index}) => renderTodo(item, index)}
             keyExtractor={item => item.title}
             contentContainerStyle={{paddingHorizontal: 32, paddingVertical: 64}}
             showsHorizontalScrollIndicator={false}
@@ -152,7 +178,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 6,
     marginRight: 8,
-    backgroundColor: 'grey',
+    //backgroundColor: 'grey',
     paddingHorizontal: 8,
     borderWidth: StyleSheet.hairlineWidth,
   },
